@@ -1,23 +1,23 @@
 import { useState } from "react";
 import { Button, Input } from "semantic-ui-react";
 
-// 1. сначало решил что нужно плучить значение из инпут
-// 2. использовать это значение по нажатию кнопки
-
 function App() {
   const [listItem, setListItem] = useState([]);
 
   const [inputValue, setInputValue] = useState("");
 
   const handleChange = (event) => {
-    setInputValue(event.target.value); // тут погуглил, не мог понять сразу как получить значение из инпут
-    // в функции handleChange мы берем value и записываем егго в наш inputValue через setInputValue
+    setInputValue(event.target.value);
   };
   const addListItem = () => {
     setListItem((prevState) => {
-      return;
-      [...prevState, inputValue];
+      return [...prevState, { value: inputValue, id: new Date() }];
     });
+    setInputValue("");
+  };
+
+  const itemDelete = (id) => {
+    setListItem((prevState) => prevState.filter((item) => item.id !== id));
   };
   return (
     <div className="ToDoList">
@@ -25,15 +25,25 @@ function App() {
       <Input type="text" value={inputValue} onChange={handleChange} />
       <Button
         onClick={() => {
-          addListItem;
+          addListItem();
         }}
       >
         add
       </Button>
       <ul>
-        <li>
-          124 <span role="presentation">X</span>
-        </li>
+        {listItem.map((item) => (
+          <li key={item.id}>
+            {item.value}
+            <span
+              role="presentation"
+              onClick={() => {
+                itemDelete(item.id);
+              }}
+            >
+              X
+            </span>
+          </li>
+        ))}
       </ul>
     </div>
   );
